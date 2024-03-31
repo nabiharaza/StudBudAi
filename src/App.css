@@ -34,17 +34,15 @@
 .main-content {
   display: flex;
   flex-direction: row;
-  flex: 1;
-  padding-top: 60px;
-  padding-bottom: 60px;
+  height: calc(100vh - 120px); /* Adjust this value based on your header and footer height */
 }
 
 .left-nav {
   position: fixed;
-  top: 48px;
+  top: 48px; /* Adjust this value based on your header height */
   left: 0;
-  height: calc(100vh - 120px);
   width: 20%;
+  height: calc(100vh - 120px); /* 100vh (full viewport height) minus header and footer height */
   background-color: #ded8c4;
   color: white;
   overflow-y: auto;
@@ -92,20 +90,26 @@
 }
 
 .content-area {
-  flex: 1;
-  padding: 20px;
   margin-left: 20%;
-  width: 70%;
-  height: 100%;
+  width: 80%;
+  padding: 20px;
   overflow-y: auto;
 }
 
 .content-area.collapsed {
-  width: 90%;
+  width: 100%;
   margin-left: 0;
 }
 
-.expand-button,
+
+.expand-button {
+    display: none; /* Initially hide the button */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 9999; /* Ensure it's above other elements */
+}
+
 .generate-button,
 .collapse-button {
   background-color: #ba5b38;
@@ -120,10 +124,18 @@
 .expand-button:hover,
 .left-nav button:hover,
 .collapse-button:hover {
-  background-color: #ead2ad;
+  background-color: #e55926;
 }
 
 .expand-button:active,
 .collapse-button:active {
   background-color: #ccc;
+}
+
+.expand-button {
+    display: none; /* Hide the expand button by default */
+}
+
+.left-nav.collapsed .expand-button {
+    display: block; /* Display the expand button when the navbar is collapsed */
 }

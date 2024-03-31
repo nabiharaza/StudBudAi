@@ -3,10 +3,11 @@
 .bottom-navbar {
   background-color: #3a3932;
   color: #fff;
-  display: flex;
+  display: block;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
+  bottom: 100px;
 }
 
 .links ul {

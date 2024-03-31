@@ -25,6 +25,12 @@ li {
   margin-bottom: 5px;
 }
 
+.answer{
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #854026;
+}
+
 .answer-indicator {
   color: green;
   font-weight: bold;
@@ -36,7 +42,7 @@ button {
   margin: 20px auto 0;
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #007bff;
+  background-color: #ba5b38;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -44,5 +50,5 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #e55926;
 }

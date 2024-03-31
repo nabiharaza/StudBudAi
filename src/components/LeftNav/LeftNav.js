@@ -54,10 +54,13 @@ const LeftNav = ({
     };
 
     return (
-        <div className={`left-nav ${collapsed ? 'collapsed' : ''}`}>
-            <button className="collapse-button" onClick={toggleCollapse}>
-                {collapsed ? '»' : '«'}
-            </button>
+        <div className={`left-nav${collapsed ? ' collapsed' : ''}`}>
+        <button className="collapse-button" onClick={toggleCollapse}>
+            {collapsed ? '»' : '«'}
+        </button>
+        <button className="expand-button" onClick={toggleCollapse}>
+            Expand Navigation
+        </button>
             <select value={selectedOption} onChange={handleOptionChange}>
                 <option value="">Select Option</option>
                 <option value="summary">Summary</option>

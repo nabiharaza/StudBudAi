@@ -1,53 +1,53 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import './Mcqs.css';
 
-const MCQs = ({ text }) => {
+const MCQs = ({text}) => {
     const [showAnswers, setShowAnswers] = useState(false);
 
     const toggleAnswers = () => {
         setShowAnswers(!showAnswers);
     };
 
-const parseMCQs = (text) => {
-    const mcqs = [];
-    const lines = text.split('\n');
-    let currentMCQ = null;
-    let parsedLine = '';
+    const parseMCQs = (text) => {
+        const mcqs = [];
+        const lines = text.split('\n');
+        let currentMCQ = {};
+        let parsedLine = '';
 
-    lines.forEach((line, index) => {
-        if (line.trim() !== '') {
-            if (line.startsWith('**Question')) {
-                // Check if this is not the first question
-                if (currentMCQ) {
-                    currentMCQ.question = parsedLine.trim();
-                    mcqs.push(currentMCQ);
+        lines.forEach((line, index) => {
+            if (line.trim() !== '') {
+                if (line.startsWith('**Question')) {
+                    // Check if this is not the first question
+                    if (Object.keys(currentMCQ).length !== 0) {
+                        currentMCQ.question = parsedLine.trim();
+                        mcqs.push(currentMCQ);
+                    }
+
+                    // Reset current MCQ
+                    currentMCQ = {
+                        question: '',
+                        options: [],
+                        answer: null
+                    };
+                    // Set parsedLine to be the line containing the question
+                    parsedLine = line.substring(line.indexOf(':') + 3).trim();
+                } else if (line.startsWith('(')) {
+                    const option = line.trim();
+                    currentMCQ.options.push(option);
+                } else if (line.startsWith('**Answer')) {
+                    currentMCQ.answer = line.substring(line.indexOf(':') + 1).trim();
                 }
-
-                // Reset current MCQ
-                currentMCQ = {
-                    question: '',
-                    options: [],
-                    answer: null
-                };
-                // Set parsedLine to be the line containing the question
-                parsedLine = lines[index + 2]; // Assuming the next line is the blank line
-            } else if (line.startsWith('(')) {
-                const option = line.trim();
-                currentMCQ.options.push(option);
-            } else if (line.startsWith('**Answer')) {
-                currentMCQ.answer = line.substring(line.indexOf(':') + 1).trim();
             }
+        });
+
+        // Push the last MCQ
+        if (Object.keys(currentMCQ).length !== 0) {
+            currentMCQ.question = parsedLine.trim();
+            mcqs.push(currentMCQ);
         }
-    });
 
-    // Push the last MCQ
-    if (currentMCQ) {
-        currentMCQ.question = parsedLine.trim();
-        mcqs.push(currentMCQ);
-    }
-
-    return mcqs;
-};
+        return mcqs;
+    };
 
 
     const mcqsData = parseMCQs(text);
