@@ -64,13 +64,14 @@ const LeftNav = ({
                 <option value="flashcards">Flash Cards</option>
                 <option value="quizzes">Quizzes</option>
                 <option value="truefalse">True/False</option>
+                <option value="mcqs">MCQs</option>
                 <option value="history">History</option>
             </select>
             {(selectedOption !== 'history') && (
                 <>
                     <input type="text" placeholder="Enter link" value={link} onChange={handleLinkChange}/>
-                    {selectedOption === 'flashcards' && (
-                        <input type="number" placeholder="Number of flashcards" value={numFlashcards}
+                    {(selectedOption === 'flashcards' || selectedOption === 'quizzes' || selectedOption === 'truefalse' || selectedOption === 'mcqs') && (
+                        <input type="number" placeholder="Questions" value={numFlashcards}
                                onChange={handleNumFlashcardsChange}/>
                     )}
                     <button className="generate-button" onClick={handleGenerateContent}>Generate Content</button>

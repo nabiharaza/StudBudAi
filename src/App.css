@@ -4,6 +4,7 @@
   flex-direction: column;
   min-height: 100vh;
   position: relative;
+  background-color: #f5f4ef;
 }
 
 .header {
@@ -39,12 +40,12 @@
 }
 
 .left-nav {
-  position: sticky;
+  position: fixed;
   top: 48px;
   left: 0;
   height: calc(100vh - 120px);
   width: 20%;
-  background-color: #070606;
+  background-color: #ded8c4;
   color: white;
   overflow-y: auto;
   transition: transform 0.3s ease;
@@ -107,8 +108,8 @@
 .expand-button,
 .generate-button,
 .collapse-button {
-  background-color: #fff;
-  color: #333;
+  background-color: #ba5b38;
+  color: white;
   border: 1px solid #333;
   border-radius: 4px;
   padding: 5px 10px;

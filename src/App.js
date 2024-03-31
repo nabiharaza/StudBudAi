@@ -7,6 +7,9 @@ import Summary from './components/Summary/Summary';
 import FlashCards from "./components/FlashCards/FlashCards";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import Quizes from "./components/Quizes/Quizes";
+import TrueFalse from "./components/TrueFalse/TrueFalse";
+import Mcqs from "./components/Mcqs/Mcqs";
 // import TrueFalse from './components/TrueFalse/TrueFalse';
 // import Quizzes from './components/Quizzes/Quizzes';
 
@@ -85,7 +88,10 @@ Separate each flashcard with a blank line.`;
                     prompt = `Read this link: ${link} and provide ${numFlashcards} quizzes questions`;
                 } else if (option === 'truefalse') {
                     prompt = `Read this link: ${link} and provide ${numFlashcards} true false questions`;
-                } else {
+                }
+                else if (option === 'mcqs') {
+                    prompt = `Read this link: ${link} and provide ${numFlashcards} multiple choice questions and give its answers below in the format: Answer to Question <answer>`;
+                }else {
                     console.error("Invalid option selected.");
                     return;
                 }
@@ -102,9 +108,11 @@ Separate each flashcard with a blank line.`;
                 } else if (option === 'flashcards') {
                     setContent(<div><FlashCards text={response.text()}/></div>);
                 } else if (option === 'quizzes') {
-                    // Handle quizzes response here
+                      setContent(<div><Quizes text={response.text()}/></div>);
                 } else if (option === 'truefalse') {
-                    // Handle true/false response here
+                    setContent(<div><TrueFalse text={response.text()}/></div>);
+                }else if (option === 'mcqs') {
+                    setContent(<div><Mcqs text={response.text()}/></div>);
                 }
             } catch
                 (error) {
