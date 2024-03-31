@@ -1,0 +1,80 @@
+/*!* LeftNav.css *!*/
+
+/*.left-nav {*/
+/*  position: fixed;*/
+/*  top: 60px;*/
+/*  left: 0;*/
+/*  height: calc(100vh - 120px); !* Set height to 100vh minus header and footer heights *!*/
+/*  width: 20%;*/
+/*  background-color: #070606;*/
+/*  color: white;*/
+/*  overflow-y: auto;*/
+/*  transition: transform 0.3s ease;*/
+/*  border-radius: 1px 10px 5px 1px;*/
+/*  display: flex;*/
+/*  flex-direction: column;*/
+/*  align-items: center;*/
+/*  z-index: 999;*/
+/*}*/
+
+/*.left-nav button {*/
+/*    margin-bottom: 10px; !* Add margin between items *!*/
+/*    border-radius: 20px;*/
+/*    margin-left: 10px;*/
+/*    align-items: flex-start;*/
+
+/*}*/
+/*.left-nav select,*/
+/*.left-nav input {*/
+/*    width: 80%;*/
+/*    height: 20px;*/
+/*    margin-bottom: 10px; !* Add margin between items *!*/
+/*    border-radius: 20px;*/
+/*    margin-left: 10px;*/
+/*    text-align: center;*/
+
+
+/*}*/
+
+/*.left-nav.collapsed {*/
+/*    transform: translateX(-100%);*/
+/*}*/
+
+/*.left-nav ul {*/
+/*    list-style-type: none;*/
+/*    padding: 0;*/
+/*}*/
+
+/*.left-nav li {*/
+/*    padding: 1rem;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.left-nav li:hover {*/
+/*    background-color: #555;*/
+/*}*/
+
+/*.expand-button,*/
+/*.generate-button,*/
+/*.collapse-button {*/
+/*    background-color: #fff; !* Background color *!*/
+/*    color: #333; !* Text color *!*/
+/*    border: 1px solid #333; !* Border *!*/
+/*    border-radius: 4px; !* Border radius *!*/
+/*    padding: 5px 10px; !* Padding *!*/
+/*    cursor: pointer; !* Cursor style *!*/
+/*    margin-top: 10px; !* Adjust margin as needed *!*/
+
+/*}*/
+
+/*!* Additional styling for hover and active states *!*/
+/*.expand-button:hover,*/
+/*.left-nav button:hover,*/
+/*.collapse-button:hover {*/
+/*    background-color: #ead2ad; !* Background color on hover *!*/
+/*}*/
+
+/*.expand-button:active,*/
+/*.collapse-button:active {*/
+/*    background-color: #ccc; !* Background color on click *!*/
+/*}*/

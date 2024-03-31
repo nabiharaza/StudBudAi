@@ -1,0 +1,77 @@
+.flashcard-container {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+.flashcard {
+    background-color: #ffffff;
+    border-radius: 20px;
+    box-shadow: 4px 4px 4px 4px rgba(0.2, 0.2, 0.2, 0.2);
+    padding: 20px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.flashcard-content {
+    min-height: 200px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.flashcard-text {
+    font-size: 24px;
+    line-height: 1.5;
+}
+
+.flip-button {
+    background-color: #4caf50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transform-origin: center;
+    transition: transform 0.3s ease;
+    border-radius: 20px;
+}
+
+.flashcard-navigation {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flashcard-navigation button {
+    background-color: #2f56da;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.flashcard-count {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    color: #888;
+    background-color: rgba(255, 255, 255, 0.5); /* Add background color for better visibility */
+    padding: 3px 6px; /* Add padding for better spacing */
+    border-radius: 4px; /* Add border radius for rounded corners */
+}
