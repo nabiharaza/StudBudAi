@@ -30,18 +30,18 @@ li {
   cursor: pointer;
 }
 
-.option.incorrect {
-  color: red;
-  font-weight: bold;
-}
-
 .option.correct {
   color: green;
   font-weight: bold;
 }
 
+.option.incorrect {
+  color: red;
+  font-weight: bold;
+}
+
 .option.selected {
-  color: blue;
+  color: #b93200;
   font-weight: bold;
 }
 
@@ -53,10 +53,6 @@ li {
 
 .answer.correct {
   color: green;
-}
-
-.answer.incorrect {
-  color: red;
 }
 
 button {
