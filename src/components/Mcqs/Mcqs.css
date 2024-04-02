@@ -23,18 +23,40 @@ ul {
 
 li {
   margin-bottom: 5px;
+  cursor: pointer;
 }
 
-.answer{
+.option {
+  cursor: pointer;
+}
+
+.option.incorrect {
+  color: red;
+  font-weight: bold;
+}
+
+.option.correct {
+  color: green;
+  font-weight: bold;
+}
+
+.option.selected {
+  color: blue;
+  font-weight: bold;
+}
+
+.answer {
   font-weight: bold;
   margin-bottom: 10px;
   color: #854026;
 }
 
-.answer-indicator {
+.answer.correct {
   color: green;
-  font-weight: bold;
-  margin-left: 5px;
+}
+
+.answer.incorrect {
+  color: red;
 }
 
 button {
