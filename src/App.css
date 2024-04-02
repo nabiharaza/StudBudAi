@@ -139,3 +139,15 @@
 .left-nav.collapsed .expand-button {
     display: block; /* Display the expand button when the navbar is collapsed */
 }
+
+.loading-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.loading-icon img {
+    width: 160px; /* Adjust the width of the loading icon as needed */
+    height: 160px; /* Adjust the height of the loading icon as needed */
+}
