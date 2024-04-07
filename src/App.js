@@ -7,6 +7,7 @@ import FlashCards from "./components/FlashCards/FlashCards";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Quizes from "./components/Quizes/Quizes";
+import TimedQuiz from "./components/TimedQuiz/TimedQuiz";
 import TrueFalse from "./components/TrueFalse/TrueFalse";
 import Mcqs from "./components/Mcqs/Mcqs";
 import loadingIcon from './imgs/birdwait.gif';
@@ -19,19 +20,21 @@ const {
 } = require("@google/generative-ai");
 
 const MODEL_NAME = "gemini-1.0-pro";
-const API_KEY = "AIzaSyAn06BWXljPZMoFqtRrq170R0npa0OMwrs";
+const API_KEY = "AIzaSyCPyHYwuoKPaUpA3HUo_h8ejIUPJagjDng";
 
 const App = () => {
-        const [content, setContent] = useState(null);
-        const [collapsed, setCollapsed] = useState(false);
-        const [selectedOption, setSelectedOption] = useState(null);
-        const [genAI, setGenAI] = useState(null);
-        const [summary, setSummary] = useState('');
-        const [numFlashcards, setNumFlashcards] = useState(10);
-        const [chat, setChat] = useState(null);
-        const [loading, setLoading] = useState(false);
-        const [links, setLinks] = useState(['']);
-        const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage authentication
+    const [content, setContent] = useState(null);
+    const [collapsed, setCollapsed] = useState(false);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [genAI, setGenAI] = useState(null);
+    const [summary, setSummary] = useState('');
+    const [numFlashcards, setNumFlashcards] = useState(10);
+    const [chat, setChat] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [links, setLinks] = useState(['']);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage authentication
+    const [timer, setTimer] = useState(20);
+    const [questionType, setQuestionType] = useState([])
 
         const handleLogin = () => {
             setIsLoggedIn(true); // Update authentication state on successful login
@@ -87,15 +90,16 @@ const App = () => {
             document.querySelector('.content-area').classList.toggle('collapsed');
         };
 
-        const handleContentGeneration = async (option, links, numFlashcards) => {
-            setLoading(true); // Set loading to true when content generation starts
-            try {
-                console.log("Generating content...");
-                let prompt;
-                if (option === 'summary') {
-                    prompt = `Read these links: ${links.join(', ')} and provide a summary`;
-                } else if (option === 'flashcards') {
-                    prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} flashcards in the following format:
+    const handleContentGeneration = async (option, links, numFlashcards, timer, questionType) => {
+        try {
+            console.log("Generating content...");
+            let prompt;
+            switch (option?.toLowerCase()) {
+                case 'summary':
+                    prompt = `Read this links: ${links} and provide a summary`;
+                    break;
+                case 'flashcards':
+                    prompt = `Read this links: ${links} and provide ${numFlashcards} flashcards in the following format:
 
 **Front of Flashcard:**
 <front content>
@@ -104,38 +108,80 @@ const App = () => {
 <back content>
 
 Separate each flashcard with a blank line.`;
-                } else if (option === 'quizzes') {
-                    prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} quizzes questions`;
-                } else if (option === 'truefalse') {
+
+                    break;
+                    case 'quizzes':
+                        prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} quizzes questions`;
+                        break;
+                    case 'timedquiz':
+                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of (${questionType}) for ${timer} minutes (The quiz question numbers should not repeat.) in the following format
+                        **Questions**
+    **{question number}. {questionType} 
+    content
+    
+    **Answers**
+    **{answer number}. {questionType} 
+    content.
+    Sample response format: **Questions**
+    
+    **1. Long Answer**
+    Question
+    
+    **2. MCQs**
+    Question
+    (a) option
+    (b) option...
+    **Answers**
+    
+    **1. Long Answer**
+    Answer for the question
+    
+    **2. MCQs**
+    (option character) Answer for the question
+    Ensure the quiz is balanced and follow this rule for each question- long answers- 2 min (20-25% of quiz questions), short answers - 1.5 min (25-30% of quiz questions), mcqs - 1 min (30-40% of quiz questions), true/false - 30 sec(10-15% of quiz questions), fill in the blanks - 30 sec(10-15% of quiz questions)`;
+                        break;
+                case 'truefalse':
                     prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} true false questions`;
-                } else if (option === 'mcqs') {
+                    break;
+                case 'mcqs':
                     prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} multiple choice questions and give its answers below in the format: Answer to Question <answer>.Make sure there is no gap between question and display like this **Question 1:** without any extra line. Question? and in the next line options.  
 (A) x
 (B) y
 (C) z
 (D) a
 **Answer: A**`;
-                } else {
+                    break;
+                default:
                     console.error("Invalid option selected.");
                     return;
                 }
+
                 console.log("Sending request to GenAI with prompt:", prompt);
                 const result = await chat.sendMessage(prompt);
                 const response = result.response;
                 console.log("Generated Content:", response.text());
                 console.log("PDF has been accepted");
 
-                if (option === 'summary') {
-                    setSummary(response.text());
-                    setContent(<div><Summary text={response.text()}/></div>);
-                } else if (option === 'flashcards') {
-                    setContent(<div><FlashCards text={response.text()}/></div>);
-                } else if (option === 'quizzes') {
-                    setContent(<div><Quizes text={response.text()}/></div>);
-                } else if (option === 'truefalse') {
-                    setContent(<div><TrueFalse text={response.text()}/></div>);
-                } else if (option === 'mcqs') {
-                    setContent(<div><Mcqs text={response.text()}/></div>);
+                switch (option?.toLowerCase()) {
+                    case 'summary':
+                        setSummary(response.text());
+                        setContent(<div><Summary text={response.text()}/></div>);
+                        break;
+                    case 'flashcards':
+                        setContent(<div><FlashCards text={response.text()}/></div>);
+                        break;
+                    case 'timedquiz':
+                        setContent(<div><TimedQuiz text={response.text()}/></div>);
+                        break;
+                    case 'quizzes':
+                        setContent(<div><Quizes text={response.text()}/></div>);
+                        break;
+                    case 'truefalse':
+                        setContent(<div><TrueFalse text={response.text()}/></div>);
+                        break;
+                    case 'mcqs':
+                        setContent(<div><Mcqs text={response.text()}/></div>);
+                        break;
                 }
             } catch (error) {
                 console.error("Error generating content:", error);
@@ -190,6 +236,10 @@ Separate each flashcard with a blank line.`;
                                         setSelectedOption={setSelectedOption}
                                         numFlashcards={numFlashcards}
                                         setNumFlashcards={setNumFlashcards}
+                                        timer={timer}
+                                        setTimer={setTimer}
+                                        questionType={questionType}
+                                        setQuestionType={setQuestionType}
                                     />
                                     <div className={`content-area${collapsed ? ' collapsed' : ''}`}>
                                         {loading ? (

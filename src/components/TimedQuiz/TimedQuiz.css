@@ -1,0 +1,38 @@
+/* Quizzes.css */
+
+.quiz-container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.quiz-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.quiz {
+  margin-bottom: 20px;
+}
+
+.quiz p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.quiz ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.quiz li {
+  font-size: 1rem;
+  margin-bottom: 5px;
+}
+
+.quiz li:hover {
+  cursor: pointer;
+  background-color: #f0f0f0;
+}

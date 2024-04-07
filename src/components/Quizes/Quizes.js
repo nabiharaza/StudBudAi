@@ -6,7 +6,7 @@ const Quizzes = ({ quizzes }) => {
   return (
     <div>
       <h2>Quizzes</h2>
-      {quizzes.map((quiz, index) => (
+      {quizzes?.map((quiz, index) => (
         <div key={index} className="quiz">
           <p>{quiz.question}</p>
           <ul>
