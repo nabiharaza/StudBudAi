@@ -114,7 +114,7 @@ Separate each flashcard with a blank line.`;
                         prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} quizzes questions`;
                         break;
                     case 'timedquiz':
-                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of (${questionType}), Number of questions = ${timer/2} (The quiz question numbers should not repeat.) in the following format
+                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of only (${questionType}) question types, Number of questions = ${timer/2} (The quiz question numbers should not repeat.) in the following format
                         **Questions**
     **{question number}. {questionType} 
     content
@@ -135,8 +135,7 @@ Separate each flashcard with a blank line.`;
     
     **1. Answer for the question**
     
-    **2. (option character) Answer for the question**
-    Ensure the quiz is balanced and follow this rule for each question- long answers- 2 min (20-25% of quiz questions), short answers - 1.5 min (25-30% of quiz questions), mcqs - 1 min (30-40% of quiz questions), true/false - 30 sec(10-15% of quiz questions), fill in the blanks - 30 sec(10-15% of quiz questions)`;
+    **2. (option character) Answer for the question**`;
                         break;
                 case 'truefalse':
                     prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} true false questions`;
