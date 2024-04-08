@@ -1,0 +1,31 @@
+
+.multiSelectContainer {
+  width: 70%;
+}
+
+.searchWrapper {
+  border: 1px solid #000 !important;
+  width: 70%;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  margin-left: 10px;
+  text-align: center;
+}
+
+.multiselect-div {
+  width: 100%;
+}
+
+.link-div {
+  width: 100%;
+}
+
+.delete-button, .add-button {
+  float: right;
+  margin: 0rem;
+  padding: 5px 10px;
+}
+
+.add-button {
+  margin-right: 0.5rem;
+}

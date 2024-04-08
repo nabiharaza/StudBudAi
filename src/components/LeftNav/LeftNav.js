@@ -10,6 +10,7 @@ const LeftNav = ({
     timer,
     questionType,
     handleAddLink,
+    handleDeleteLink,
     handleLinkChange,
     selectedOption,
     setSelectedOption,
@@ -68,17 +69,24 @@ const LeftNav = ({
             {selectedOption !== 'history' && (
                 <>
                 {links.map((link, index) => (
-                    <input
+                    <><div className='link-div'>
+                        <input
                         key={index}
                         type="text"
                         placeholder="Enter link"
                         value={link}
-                        onChange={(e) => handleLinkChange(index, e.target.value)}
-                    />
+                        onChange={(e) => handleLinkChange(index, e.target.value)} />
+                        <button className="add-button" onClick={handleAddLink}>
+                            +
+                        </button>
+                        {index !== 0 && (
+                        <button className="delete-button" onClick={(e) => handleDeleteLink(index, e.target.value)}>
+                            x
+                        </button>
+                        )}
+                        </div>
+                    </>
                 ))}
-                <button className="generate-button" onClick={handleAddLink}>
-                    +
-                </button>
                 {(selectedOption === 'flashcards' ||
                     selectedOption === 'quizzes' ||
                     selectedOption === 'truefalse' ||
@@ -91,23 +99,24 @@ const LeftNav = ({
                     />
                 )}
                 {(selectedOption === 'timedQuiz') && (
-                    <input type="number" placeholder="Time" value={timer}
+                    <><input type="number" placeholder="Time" value={timer}
                            onChange={handleTimerChange}/>
-                ) && (
-                    <Multiselect
-                      isObject={false}
-                      onKeyPressFn={function noRefCheck(){}}
-                      onRemove={function noRefCheck(){}}
-                      onSearch={function noRefCheck(){}}
-                      onSelect={handleQuestionTypeChange}
-                      options={[
-                        'Long Answer',
-                        'Short Answer',
-                        'MCQs',
-                        'True/False',
-                        'Fill in the blanks'
-                      ]}
-                    />
+                    <div className="multiselect-div">
+                        <Multiselect
+                        isObject={false}
+                        onKeyPressFn={function noRefCheck(){}}
+                        onRemove={function noRefCheck(){}}
+                        onSearch={function noRefCheck(){}}
+                        onSelect={handleQuestionTypeChange}
+                        options={[
+                            'Long Answer',
+                            'Short Answer',
+                            'MCQs',
+                            'True/False',
+                            'Fill in the blanks'
+                        ]}
+                        />
+                    </div></>
                 )}
                     <button className="generate-button" onClick={handleGenerateContent}>Generate Content</button>
                 </>

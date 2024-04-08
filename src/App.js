@@ -133,11 +133,9 @@ Separate each flashcard with a blank line.`;
     (b) option...
     **Answers**
     
-    **1. Long Answer**
-    Answer for the question
+    **1. Answer for the question**
     
-    **2. MCQs**
-    (option character) Answer for the question
+    **2. (option character) Answer for the question**
     Ensure the quiz is balanced and follow this rule for each question- long answers- 2 min (20-25% of quiz questions), short answers - 1.5 min (25-30% of quiz questions), mcqs - 1 min (30-40% of quiz questions), true/false - 30 sec(10-15% of quiz questions), fill in the blanks - 30 sec(10-15% of quiz questions)`;
                         break;
                 case 'truefalse':
@@ -194,6 +192,12 @@ Separate each flashcard with a blank line.`;
             setLinks([...links, '']);
         };
 
+        const handleDeleteLink = (index, value) => {
+            const newLinks = [...links];
+            newLinks.splice(index, 1);
+            setLinks(newLinks);
+        };
+
         if (!isLoggedIn) {
             return (
                 <div className="app-container">
@@ -231,6 +235,7 @@ Separate each flashcard with a blank line.`;
                                         handleContentGeneration={handleContentGeneration}
                                         links={links}
                                         handleAddLink={handleAddLink}
+                                        handleDeleteLink={handleDeleteLink}
                                         handleLinkChange={handleLinkChange}
                                         selectedOption={selectedOption}
                                         setSelectedOption={setSelectedOption}

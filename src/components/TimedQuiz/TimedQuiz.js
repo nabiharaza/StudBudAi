@@ -68,7 +68,8 @@ const TimedQuiz = ({ text }) => {
                                 currentQuiz.options = [];
                             }
                             currentQuiz.options.push(line)
-                        } else if (isTrueFalse) {
+                        } 
+                        if (isTrueFalse) {
                             currentQuiz.options = ["True", "False"]
                             isTrueFalse = false;
                         }
@@ -81,10 +82,7 @@ const TimedQuiz = ({ text }) => {
                         if (index !== -1) {
                             currentQuiz = quiz[index];
                         }
-                        isNextLineAnAnswer = true;
-                    } else if (currentQuiz) {
-                        currentQuiz.answer = line;
-                        isNextLineAnAnswer = false;
+                        currentQuiz.answer = res.questionType;
                         currentQuiz = {};
                     }
                 }

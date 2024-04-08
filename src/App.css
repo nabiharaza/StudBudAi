@@ -44,7 +44,6 @@
   width: 20%;
   height: calc(100vh - 120px); /* 100vh (full viewport height) minus header and footer height */
   background-color: #ded8c4;
-  color: white;
   overflow-y: auto;
   transition: transform 0.3s ease;
   border-radius: 1px 10px 5px 1px;
@@ -67,7 +66,7 @@
 
 .left-nav select,
 .left-nav input {
-  width: 80%;
+  width: 70%;
   height: 20px;
   margin-bottom: 10px;
   border-radius: 20px;
