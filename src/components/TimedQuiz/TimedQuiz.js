@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import Timer from '../Timer/Timer';
 
-const TimedQuiz = ({ text }) => {
+const TimedQuiz = ({ text, timer }) => {
     const [title, setTitle] = useState("");
     const [quizData, setQuizData] = useState([]);
     const [showAnswers, setShowAnswers] = useState(false);
     const [selectedAnswers, setSelectedAnswers] = useState(new Array(10).fill(null));
+    const [quizCompleted, setQuizCompleted] = useState(false);
 
     useEffect(() => {
         const parsedQuizData = parseQuiz(text);
@@ -93,6 +95,11 @@ const TimedQuiz = ({ text }) => {
         return quiz;
     };
 
+    const handleTimeout = () => {
+        setQuizCompleted(true);
+        // Add any additional logic you want when the quiz timer runs out
+    };
+
     const handleOptionSelect = (mcqIndex, option) => {
         const newSelectedAnswers = [...selectedAnswers];
         newSelectedAnswers[mcqIndex] = option;
@@ -103,6 +110,12 @@ const TimedQuiz = ({ text }) => {
     return (
         <div className="mcq-container">
             <h2>{title}</h2>
+            {/* TODO: Add Start Quiz pop up */}
+            <div>
+                {!quizCompleted && <Timer timeLimit={timer*60} onTimeout={handleTimeout} />}
+                {/* Render your quiz questions and answers here */}
+                {quizCompleted && <p>Quiz completed!</p>}
+            </div>
             {quizData.length > 0 ? (
                 quizData.map((quiz, index) => (
                     <div key={quiz.id} className="mcq">

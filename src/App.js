@@ -114,7 +114,7 @@ Separate each flashcard with a blank line.`;
                         prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} quizzes questions`;
                         break;
                     case 'timedquiz':
-                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of (${questionType}) for ${timer} minutes (The quiz question numbers should not repeat.) in the following format
+                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of (${questionType}), Number of questions = ${timer/2} (The quiz question numbers should not repeat.) in the following format
                         **Questions**
     **{question number}. {questionType} 
     content
@@ -169,7 +169,7 @@ Separate each flashcard with a blank line.`;
                         setContent(<div><FlashCards text={response.text()}/></div>);
                         break;
                     case 'timedquiz':
-                        setContent(<div><TimedQuiz text={response.text()}/></div>);
+                        setContent(<div><TimedQuiz text={response.text()} timer={timer}/></div>);
                         break;
                     case 'quizzes':
                         setContent(<div><Quizes text={response.text()}/></div>);
