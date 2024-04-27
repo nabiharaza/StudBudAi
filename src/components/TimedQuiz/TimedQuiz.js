@@ -1,185 +1,156 @@
 import React, { useState, useEffect } from 'react';
 import Timer from '../Timer/Timer';
+import { parseQuiz } from './TimedQuizUtil';
 
-const TimedQuiz = ({ text, timer }) => {
+const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
     const [title, setTitle] = useState("");
     const [quizData, setQuizData] = useState([]);
     const [showAnswers, setShowAnswers] = useState(false);
-    const [selectedAnswers, setSelectedAnswers] = useState(new Array(10).fill(null));
+    const [answers, setAnswers] = useState(new Array(10).fill(null));
     const [quizCompleted, setQuizCompleted] = useState(false);
+    const [showSubmitButton, setShowSubmitButton] = useState(true);
+    const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
+    const [answersToValidate, setAnswersToValidate] = useState([]);
 
     useEffect(() => {
         const parsedQuizData = parseQuiz(text);
         setQuizData(parsedQuizData);
     }, [text]);
 
-    const startsWithNumberAndPeriod = (line) => {
-        const pattern = /^\*\*([0-9]+)\. (.*)\*\*$/;
-        const match = line.match(pattern);
-        if (match) {
-            const number = match[1]?.trim('*');
-            const questionType = match[2]?.trimEnd('*');
-            return { number, questionType };
-        } else {
-            return null;
-        }
-    };
-
-    const parseQuiz = (text) => {
-        const quiz = [];
-        const lines = text.split('\n');
-        let currentQuiz = {};
-        let parseQuestions = false;
-        let parseAnswers = false;
-        let isNextLineAQuestion = false;
-        let isNextLineAnOption = false;
-        let isNextLineAnAnswer = false;
-        let isMCQ = false;
-        let isTrueFalse = false;
-
-        lines.forEach((line, _) => {
-            if (line.trim() !== '') {
-                if (line.startsWith('**Questions')) {
-                    // Check if this is not the first question
-                    parseQuestions = true;
-                } else if (line.startsWith('**Answers')) {
-                    parseAnswers = true;
-                    parseQuestions = false;
-                    currentQuiz = {};
-                }
-                if (parseQuestions) {
-                    let res = startsWithNumberAndPeriod(line);
-                    if (res) {
-                        currentQuiz = {
-                            id: res.number,
-                            questionType: res.questionType
-                        }
-                        quiz.push(currentQuiz)
-                        isNextLineAQuestion = true;
-                        isNextLineAnOption = false;
-                        isMCQ = currentQuiz.questionType?.startsWith('MCQ')
-                        isTrueFalse = currentQuiz.questionType?.startsWith('True')
-                    } else {
-                        if (!isMCQ) {
-                            currentQuiz.question = line;
-                        } else if (!isNextLineAnOption && isMCQ) {
-                            currentQuiz.question = line;
-                            isNextLineAnOption = true;
-                        } else if (isNextLineAnOption) {
-                            if (!currentQuiz?.options) {
-                                currentQuiz.options = [];
-                            }
-                            currentQuiz.options.push(line)
-                        } 
-                        if (isTrueFalse) {
-                            currentQuiz.options = ["True", "False"]
-                            isTrueFalse = false;
-                        }
-                        isNextLineAQuestion = false;
-                    }
-                } else if (parseAnswers) {
-                    let res = startsWithNumberAndPeriod(line);
-                    if (res) {
-                        const index = quiz.findIndex(item => item.id === res.number);
-                        if (index !== -1) {
-                            currentQuiz = quiz[index];
-                        }
-                        currentQuiz.answer = res.questionType;
-                        currentQuiz = {};
-                    }
-                }
-            }
-        });
-
-        console.log(quiz);
-        return quiz;
-    };
-
     const handleTimeout = () => {
         setQuizCompleted(true);
-        // Add any additional logic you want when the quiz timer runs out
+        // TODO: Add show answers logic
     };
 
     const handleOptionSelect = (mcqIndex, option) => {
-        const newSelectedAnswers = [...selectedAnswers];
+        const newSelectedAnswers = [...answers];
         newSelectedAnswers[mcqIndex] = option;
-        setSelectedAnswers(newSelectedAnswers);
+        setAnswers(newSelectedAnswers);
         console.log(`Selected option for MCQ ${mcqIndex + 1}: ${option}`);
+    };
+
+    const handleAnswer = (idx, val) => {
+        const newSelectedAnswers = [...answers];
+        newSelectedAnswers[idx] = val;
+        setAnswers(newSelectedAnswers);
+        console.log(`Answer for ans ${idx + 1}: ${val}`);
+    };
+
+    const hideAnswers = () => {
+        setShowAnswers(false);
+    };
+
+    const handleRevealAnswers = () => {
+        setShowAnswers(true);
+        console.log('showAnswers:', showAnswers);
+    };
+
+    const handleGenerateContent = async () => {
+        // Trigger content generation with selected option, link, and number of flashcards
+        await handleContentGeneration('validateAnswer', null, null, null, null, answersToValidate);
+    };
+
+    const handleSubmit = async () => {
+        let correctCount = 0;
+        let answersToValidate = [];
+        const newQuizData = quizData.map((quiz, index) => {
+            let isCorrect = false;
+            const answer = answers[index];
+            if (quiz.questionType === 'MCQ' || quiz.questionType == 'True/False') {
+                let correctOptionText = quiz.options[quiz.correctAnswer.charCodeAt(0) - 'A'.charCodeAt(0)];
+                isCorrect = answer === quiz.correctAnswer;
+            } else {
+                quiz.userAnswer = answer;
+                answersToValidate.push(quiz)
+            }
+
+            if (isCorrect) {
+                correctCount++;
+            }
+            // console.log(`MCQ ${index + 1} - Question: ${quiz.question}, Selected Option: ${answer}, Correct Answer: ${correctOptionText}, isCorrect: ${isCorrect}`);
+            return {...quiz, answer, isCorrect};
+        });
+        if (answersToValidate?.length > 0) {
+            setAnswersToValidate(answersToValidate);
+            let response = await handleGenerateContent();
+            console.log("Validated answer:", response.text());
+        }
+        setQuizData(newQuizData);
+        setCorrectAnswerCount(correctCount);
+        setShowAnswers(true);
+        setShowSubmitButton(false);
+        console.log('New MCQs Data:', newQuizData);
+        console.log('Correct answer count:', correctCount);
     };
 
     return (
         <div className="mcq-container">
             <h2>{title}</h2>
-            {/* TODO: Add Start Quiz pop up */}
-            <div>
-                {!quizCompleted && <Timer timeLimit={timer*60} onTimeout={handleTimeout} />}
-                {/* Render your quiz questions and answers here */}
-                {quizCompleted && <p>Quiz completed!</p>}
-            </div>
             {quizData.length > 0 ? (
-                quizData.map((quiz, index) => (
-                    <div key={quiz.id} className="mcq">
-                        <p className="question">{`${quiz.id}. ${quiz.question}`}</p>
-                        {quiz?.options && quiz?.options?.length > 0 ? (
-                        <ul>
-                            {quiz?.options?.map(option => {
-                                return (
-                                    <li
-                                        key={option}
-                                        className={`option ${
-                                            showAnswers
-                                                ? option === quiz.answer
-                                                    ? 'correct'
-                                                    : selectedAnswers[index] === option
-                                                        ? 'incorrect'
-                                                        : ''
-                                                : selectedAnswers[index] === option
-                                                    ? 'selected'
-                                                    : ''
-                                        }`}
-                                    >
-                                        <input
-                                            type="radio"
-                                            id={`mcq_${index}_option_${option}`}
-                                            name={`mcq_${index}`}
-                                            value={option}
-                                            checked={selectedAnswers[index] === option}
-                                            onChange={() => handleOptionSelect(index, option)}
-                                            disabled={showAnswers}
-                                        />
-                                        <label
-                                            htmlFor={`mcq_${index}_option_${option}`}
-                                            className={
-                                                showAnswers
-                                                    ? option === quiz.answer
-                                                        ? 'correct'
-                                                        : selectedAnswers[index] === option
-                                                            ? 'incorrect'
-                                                            : ''
-                                                    : selectedAnswers[index] === option
-                                                        ? 'selected'
-                                                        : ''
-                                            }
-                                        >
-                                            {option}
-                                        </label>
-                                    </li>
-                                );
-                            })}
-                        </ul>
-                        ) : quiz.questionType === 'Long Answer' ?
-                            <textarea rows="4" cols="50" />
-                        : <input type={text}/>}
+                <>
+                    {/* TODO: Add Start Quiz pop up */}
+                    <div>
+                        {!quizCompleted && <Timer timeLimit={timer*60} onTimeout={handleTimeout} />}
+                        {quizCompleted && <p>Time Up!</p>}
                     </div>
-                ))
-                ) : (
+                    {quizData.map((quiz, index) => (
+                        <QuizQuestion key={quiz.id} quiz={quiz} index={index} handleOptionSelect={handleOptionSelect} handleAnswer={handleAnswer} answer={answers[index]} showAnswers={showAnswers} />
+                    ))}
+                    {!quizCompleted && showSubmitButton && <button onClick={handleSubmit}>Submit</button>}
+                    {quizCompleted && <button onClick={handleRevealAnswers}>Reveal Answers</button>}
+                    {showAnswers && (
+                        <div>
+                            <p>Answers revealed!</p>
+                            <p>
+                                You got {correctAnswerCount} out of {quizData.length} correct.
+                            </p>
+                            <button onClick={hideAnswers}>Hide Answers</button>
+                        </div>
+                    )}
+                </>
+            ) : (
                 <p>No Timed Quiz available.</p>
             )}
-            {/*<button onClick={toggleAnswers}>*/}
-            {/*    {submitQuiz ? 'Hide Answers' : 'Reveal Answers'}*/}
-            {/*</button>*/}
         </div>
     );
+};
+
+const QuizQuestion = ({ quiz, index, handleOptionSelect, handleAnswer, answer, showAnswers }) => {
+    return (
+        <form onSubmit={this.handleSubmit}>
+            <div className="mcq">
+                <p className="question">{`${quiz.id}. ${quiz.question}`}</p>
+                {quiz.options && quiz.options.length > 0 ? (
+                    <ul>
+                        {quiz.options.map(option => (
+                            <QuizOption key={option} option={option} quiz={quiz} index={index} handleOptionSelect={handleOptionSelect} answer={answer} showAnswers={showAnswers} />
+                        ))}
+                    </ul>
+                ) : quiz.questionType === 'Long Answer' || quiz.questionType === 'Short Answer' ? (
+                    <textarea id={`ques_${index}`} rows="4" cols="50" onBlur={() => handleAnswer(index, answer)} />
+                ) : (
+                    <input type="text" id={`ques_${index}`} onBlur={() => handleAnswer(index, answer)} />
+                )}
+            </div>
+        </form>
+    );
+};
+
+const QuizOption = ({ option, quiz, index, handleOptionSelect, answer, showAnswers }) => {
+    return (
+        <li className={`option ${getOptionClassName(option, quiz, answer, showAnswers)}`}>
+            <input type="radio" id={`mcq_${index}_option_${option}`} name={`mcq_${index}`} value={option} checked={answer === option} onChange={() => handleOptionSelect(index, option)} disabled={showAnswers} />
+            <label htmlFor={`mcq_${index}_option_${option}`} className={getOptionClassName(option, quiz, answer, showAnswers)}>{option}</label>
+        </li>
+    );
+};
+
+const getOptionClassName = (option, quiz, selectedAnswer, showAnswers) => {
+    if (showAnswers) {
+        return option === quiz.answer ? 'correct' : selectedAnswer === option ? 'incorrect' : '';
+    } else {
+        return selectedAnswer === option ? 'selected' : '';
+    }
 };
 
 export default TimedQuiz;

@@ -35,6 +35,7 @@ const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false); // State to manage authentication
     const [timer, setTimer] = useState(20);
     const [questionType, setQuestionType] = useState([])
+    const [answersToValidate, setAnswersToValidate] = useState([])
 
         const handleLogin = () => {
             setIsLoggedIn(true); // Update authentication state on successful login
@@ -114,28 +115,14 @@ Separate each flashcard with a blank line.`;
                         prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} quizzes questions`;
                         break;
                     case 'timedquiz':
-                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of only (${questionType}) question types, Number of questions = ${timer/2} (The quiz question numbers should not repeat.) in the following format
-                        **Questions**
-    **{question number}. {questionType} 
-    content
-    
-    **Answers**
-    **{answer number}. {questionType} 
-    content.
-    Sample response format: **Questions**
-    
-    **1. Long Answer**
-    Question
-    
-    **2. MCQs**
-    Question
-    (a) option
-    (b) option...
-    **Answers**
-    
-    **1. Answer for the question**
-    
-    **2. (option character) Answer for the question**`;
+                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of only (${questionType}) question types, Number of questions = ${Math.round(timer/2)} (The quiz question numbers should not repeat.).
+                        Make sure there is no gap between question and display like this **Question {question number}:** [without any extra line] {question type} and in the next line give the actual question. After the actual question, next line
+**Answer:** {question type} and in the next line give the actual answer. Add new line before next question.  In case of MCQs after the actual question give options in the next line like  
+(a) x
+(b) y
+(c) z
+(d) a
+And then in the next line after options, give the answer in this format - **Answer:** {question type} and in the next line give the actual answer. Please ensure Number of questions returned is at max ${Math.round(timer/2)} questions.`;
                         break;
                 case 'truefalse':
                     prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} true false questions`;
@@ -147,6 +134,9 @@ Separate each flashcard with a blank line.`;
 (C) z
 (D) a
 **Answer: A**`;
+                    break;
+                case 'validateAnswer':
+                    prompt = `Provided is a list of answers that need validation. ${answersToValidate}. Please help validate if the userAnswer matches the correctAnswer and return the response in the same format with correctness score out of 10 and improvements if any`;
                     break;
                 default:
                     console.error("Invalid option selected.");
@@ -168,7 +158,7 @@ Separate each flashcard with a blank line.`;
                         setContent(<div><FlashCards text={response.text()}/></div>);
                         break;
                     case 'timedquiz':
-                        setContent(<div><TimedQuiz text={response.text()} timer={timer}/></div>);
+                        setContent(<div><TimedQuiz text={response.text()} timer={timer} setAnswersToValidate={setAnswersToValidate}/></div>);
                         break;
                     case 'quizzes':
                         setContent(<div><Quizes text={response.text()}/></div>);
