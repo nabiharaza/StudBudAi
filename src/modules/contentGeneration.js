@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import Summary from "../src/components/Summary/Summary";
-import FlashCards from "../src/components/FlashCards/FlashCards";
-import TimedQuiz from "../src/components/TimedQuiz/TimedQuiz";
-import Quizes from "../src/components/Quizes/Quizes";
-import TrueFalse from "../src/components/TrueFalse/TrueFalse";
-import Mcqs from "../src/components/Mcqs/Mcqs";
+import Summary from "../components/Summary/Summary";
+import FlashCards from "../components/FlashCards/FlashCards";
+import TimedQuiz from "../components/TimedQuiz/TimedQuiz";
+import Quizes from "../components/Quizes/Quizes";
+import TrueFalse from "../components/TrueFalse/TrueFalse";
+import Mcqs from "../components/Mcqs/Mcqs";
 
-const useContentGeneration = (genAI, chat) => {
+const useContentGeneration = (genAI, chat, setNumFlashcards) => {
     const [content, setContent] = useState(null);
     const [summary, setSummary] = useState('');
     const [loading, setLoading] = useState(false);
@@ -14,6 +14,7 @@ const useContentGeneration = (genAI, chat) => {
     const handleContentGeneration = async (option, links, numFlashcards, timer, questionType) => {
         try {
             console.log("Generating content...");
+            setLoading(true);
             let prompt;
             switch (option?.toLowerCase()) {
                 case 'summary':
@@ -107,11 +108,11 @@ Separate each flashcard with a blank line.`;
         } catch (error) {
             console.error("Error generating content:", error);
         } finally {
-            setLoading(false); // Set loading to false when content generation is complete
+            setLoading(false);
         }
     };
 
-    return {content, summary, loading, handleContentGeneration};
+    return {content, summary, loading, setNumFlashcards, handleContentGeneration};
 };
 
 export default useContentGeneration;
