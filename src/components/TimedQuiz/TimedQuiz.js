@@ -47,6 +47,7 @@ const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
 
     const handleGenerateContent = async () => {
         // Trigger content generation with selected option, link, and number of flashcards
+        console.log(answersToValidate);
         await handleContentGeneration('validateAnswer', null, null, null, null, answersToValidate);
     };
 
@@ -56,7 +57,7 @@ const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
         const newQuizData = quizData.map((quiz, index) => {
             let isCorrect = false;
             const answer = answers[index];
-            if (quiz.questionType === 'MCQ' || quiz.questionType == 'True/False') {
+            if (quiz.questionType?.toLowerCase()?.startsWith('mcq') || quiz.questionType?.toLowerCase()?.startsWith('true')) {
                 let correctOptionText = quiz.options[quiz.correctAnswer.charCodeAt(0) - 'A'.charCodeAt(0)];
                 isCorrect = answer === quiz.correctAnswer;
             } else {
@@ -117,22 +118,20 @@ const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
 
 const QuizQuestion = ({ quiz, index, handleOptionSelect, handleAnswer, answer, showAnswers }) => {
     return (
-        <form onSubmit={this.handleSubmit}>
-            <div className="mcq">
-                <p className="question">{`${quiz.id}. ${quiz.question}`}</p>
-                {quiz.options && quiz.options.length > 0 ? (
-                    <ul>
-                        {quiz.options.map(option => (
-                            <QuizOption key={option} option={option} quiz={quiz} index={index} handleOptionSelect={handleOptionSelect} answer={answer} showAnswers={showAnswers} />
-                        ))}
-                    </ul>
-                ) : quiz.questionType === 'Long Answer' || quiz.questionType === 'Short Answer' ? (
-                    <textarea id={`ques_${index}`} rows="4" cols="50" onBlur={() => handleAnswer(index, answer)} />
-                ) : (
-                    <input type="text" id={`ques_${index}`} onBlur={() => handleAnswer(index, answer)} />
-                )}
-            </div>
-        </form>
+        <div className="mcq">
+            <p className="question">{`${quiz.id}. ${quiz.question}`}</p>
+            {quiz.options && quiz.options.length > 0 ? (
+                <ul>
+                    {quiz.options.map(option => (
+                        <QuizOption key={option} option={option} quiz={quiz} index={index} handleOptionSelect={handleOptionSelect} answer={answer} showAnswers={showAnswers} />
+                    ))}
+                </ul>
+            ) : quiz.questionType === 'Long Answer' || quiz.questionType === 'Short Answer' ? (
+                <textarea id={`ques_${index}`} rows="4" cols="50" onBlur={(event) => handleAnswer(index, event?.target?.value)} />
+            ) : (
+                <input type="text" id={`ques_${index}`} onBlur={(event) => handleAnswer(index, event?.target?.value)} />
+            )}
+        </div>
     );
 };
 
