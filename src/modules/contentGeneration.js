@@ -10,6 +10,7 @@ const useContentGeneration = (genAI, chat, setNumFlashcards) => {
     const [content, setContent] = useState(null);
     const [summary, setSummary] = useState('');
     const [loading, setLoading] = useState(false);
+    const [answersToValidate, setAnswersToValidate] = useState([]);
 
     const handleContentGeneration = async (option, links, numFlashcards, timer, questionType) => {
         try {
@@ -35,33 +36,16 @@ Separate each flashcard with a blank line.`;
                 case 'quizzes':
                     prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} quizzes questions`;
                     break;
-                case 'timedquiz':
-                    prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of (${questionType}) for ${timer} minutes (The quiz question numbers should not repeat.) in the following format
-                        **Questions**
-    **{question number}. {questionType} 
-    content
-    
-    **Answers**
-    **{answer number}. {questionType} 
-    content.
-    Sample response format: **Questions**
-    
-    **1. Long Answer**
-    Question
-    
-    **2. MCQs**
-    Question
-    (a) option
-    (b) option...
-    **Answers**
-    
-    **1. Long Answer**
-    Answer for the question
-    
-    **2. MCQs**
-    (option character) Answer for the question
-    Ensure the quiz is balanced and follow this rule for each question- long answers- 2 min (20-25% of quiz questions), short answers - 1.5 min (25-30% of quiz questions), mcqs - 1 min (30-40% of quiz questions), true/false - 30 sec(10-15% of quiz questions), fill in the blanks - 30 sec(10-15% of quiz questions)`;
-                    break;
+                    case 'timedquiz':
+                        prompt = `Read this links: ${links.join(', ')} and provide quiz questions with a mix of only (${questionType}) question types, Number of questions = ${Math.round(timer/2)} (The quiz question numbers should not repeat.).
+                        Make sure there is no gap between question and display like this **Question {question number}:** [without any extra line] {question type} and in the next line give the actual question. After the actual question, next line
+**Answer:** {question type} and in the next line give the actual answer. Add new line before next question.  In case of MCQs after the actual question give options in the next line like  
+(a) x
+(b) y
+(c) z
+(d) a
+And then in the next line after options, give the answer in this format - **Answer:** {question type} and in the next line give the actual answer. Please ensure Number of questions returned is at max ${Math.round(timer/2)} questions.`;
+                        break;
                 case 'truefalse':
                     prompt = `Read these links: ${links.join(', ')} and provide ${numFlashcards} true false questions`;
                     break;
@@ -72,6 +56,9 @@ Separate each flashcard with a blank line.`;
 (C) z
 (D) a
 **Answer: A**`;
+                    break;
+                case 'validateAnswer':
+                    prompt = `Provided is a list of answers that need validation. ${answersToValidate}. Please help validate if the userAnswer matches the correctAnswer and return the response in the same format with correctness score out of 10 and improvements if any`;
                     break;
                 default:
                     console.error("Invalid option selected.");
@@ -93,7 +80,7 @@ Separate each flashcard with a blank line.`;
                     setContent(<div><FlashCards text={response.text()}/></div>);
                     break;
                 case 'timedquiz':
-                    setContent(<div><TimedQuiz text={response.text()}/></div>);
+                    setContent(<div><TimedQuiz text={response.text()} timer={timer} setAnswersToValidate={setAnswersToValidate}/></div>);
                     break;
                 case 'quizzes':
                     setContent(<div><Quizes text={response.text()}/></div>);

@@ -33,7 +33,6 @@ const App = () => {
     const [chat, setChat] = useState(null);
     const [links, setLinks] = useState(['']);
     const [timer, setTimer] = useState(20);
-    const [answersToValidate, setAnswersToValidate] = useState([]);
     const [questionType, setQuestionType] = useState([]);
     const {content, summary, loading, handleContentGeneration} = useContentGeneration(genAI, chat);
 
