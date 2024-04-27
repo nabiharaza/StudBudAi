@@ -119,6 +119,12 @@ const App = () => {
         setLinks([...links, '']);
     };
 
+    const handleDeleteLink = (index, value) => {
+        const newLinks = [...links];
+        newLinks.splice(index, 1);
+        setLinks(newLinks);
+    };
+
     const handleLinkChange = (index, value) => {
         const newLinks = [...links];
         newLinks[index] = value;
@@ -146,6 +152,7 @@ const App = () => {
                                             handleContentGeneration={contentGeneration.handleContentGeneration}
                                             links={links}
                                             handleAddLink={handleAddLink}
+                                            handleDeleteLink={handleDeleteLink}
                                             handleLinkChange={handleLinkChange}
                                             selectedOption={selectedOption}
                                             setSelectedOption={setSelectedOption}
