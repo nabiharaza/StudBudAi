@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import firebaseApp from '../src/FirebaseAuth';
+import firebaseApp from './FirebaseAuth';
 
 
 ReactDOM.render(

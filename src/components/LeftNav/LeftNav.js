@@ -56,7 +56,7 @@ const LeftNav = ({
             <button className="expand-button" onClick={toggleCollapse}>
                 Expand Navigation
             </button>
-            <select value={selectedOption} onChange={handleOptionChange}>
+            <select value={selectedOption || ''} onChange={handleOptionChange}>
                 <option value="">Select Option</option>
                 <option value="summary">Summary</option>
                 <option value="flashcards">Flash Cards</option>
