@@ -6,7 +6,7 @@ const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
     const [title, setTitle] = useState("");
     const [quizData, setQuizData] = useState([]);
     const [showAnswers, setShowAnswers] = useState(false);
-    const [answers, setAnswers] = useState(new Array(10).fill(null));
+    const [answers, setAnswers] = useState(new Array().fill(null));
     const [quizCompleted, setQuizCompleted] = useState(false);
     const [showSubmitButton, setShowSubmitButton] = useState(true);
     const [correctAnswerCount, setCorrectAnswerCount] = useState(0);
@@ -45,24 +45,38 @@ const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
         console.log('showAnswers:', showAnswers);
     };
 
+    useEffect(() => {
+        const fetchData = async () => {
+          let response = await handleGenerateContent();
+        //   console.log(response.text());
+    
+          // Update quiz data, correct answer count, and UI states
+          setShowAnswers(true);
+          setShowSubmitButton(false);
+        };
+    
+        if (answersToValidate.length > 0) {
+          fetchData();
+        }
+    }, [answersToValidate]);
+
     const handleGenerateContent = async () => {
         // Trigger content generation with selected option, link, and number of flashcards
         console.log(answersToValidate);
-        await handleContentGeneration('validateAnswer', null, null, null, null, answersToValidate);
+        // await handleContentGeneration('validateAnswer', null, null, null, null, answersToValidate);
     };
 
     const handleSubmit = async () => {
         let correctCount = 0;
-        let answersToValidate = [];
+        let toValidate = [];
         const newQuizData = quizData.map((quiz, index) => {
             let isCorrect = false;
             const answer = answers[index];
             if (quiz.questionType?.toLowerCase()?.startsWith('mcq') || quiz.questionType?.toLowerCase()?.startsWith('true')) {
-                let correctOptionText = quiz.options[quiz.correctAnswer.charCodeAt(0) - 'A'.charCodeAt(0)];
                 isCorrect = answer === quiz.correctAnswer;
             } else {
                 quiz.userAnswer = answer;
-                answersToValidate.push(quiz)
+                toValidate.push(quiz)
             }
 
             if (isCorrect) {
@@ -71,17 +85,14 @@ const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
             // console.log(`MCQ ${index + 1} - Question: ${quiz.question}, Selected Option: ${answer}, Correct Answer: ${correctOptionText}, isCorrect: ${isCorrect}`);
             return {...quiz, answer, isCorrect};
         });
-        if (answersToValidate?.length > 0) {
-            setAnswersToValidate(answersToValidate);
-            let response = await handleGenerateContent();
-            console.log("Validated answer:", response.text());
-        }
         setQuizData(newQuizData);
         setCorrectAnswerCount(correctCount);
-        setShowAnswers(true);
-        setShowSubmitButton(false);
+
         console.log('New MCQs Data:', newQuizData);
         console.log('Correct answer count:', correctCount);
+        if (toValidate?.length > 0) {
+            setAnswersToValidate(prevAnswers => [...prevAnswers, ...toValidate]);
+        }
     };
 
     return (
@@ -98,7 +109,7 @@ const TimedQuiz = ({ text, timer, handleContentGeneration }) => {
                         <QuizQuestion key={quiz.id} quiz={quiz} index={index} handleOptionSelect={handleOptionSelect} handleAnswer={handleAnswer} answer={answers[index]} showAnswers={showAnswers} />
                     ))}
                     {!quizCompleted && showSubmitButton && <button onClick={handleSubmit}>Submit</button>}
-                    {quizCompleted && <button onClick={handleRevealAnswers}>Reveal Answers</button>}
+                    {(quizCompleted || !showAnswers) && <button onClick={handleRevealAnswers}>Reveal Answers</button>}
                     {showAnswers && (
                         <div>
                             <p>Answers revealed!</p>

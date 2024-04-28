@@ -85,7 +85,7 @@ export const parseQuiz = (text) => {
                 isNextLineAnAnswer = true;
                 parseAnswers = false;
             } else if (isNextLineAnAnswer) {
-                currentQuiz.correctAnswer += `${line} \n`;
+                currentQuiz.correctAnswer += `${line}`;
             }
 
            if (parseAnswers || isNextLineAnAnswer) {
