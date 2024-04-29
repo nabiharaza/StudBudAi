@@ -26,6 +26,75 @@
   padding: 5px 10px;
 }
 
-.add-button {
-  margin-right: 0.5rem;
+.delete-button {
+  margin-right: 5px;
+}
+
+.left-nav {
+  top: 48px; /* Adjust this value based on your header height */
+  padding: 1rem 1rem 0 1rem;
+  left: 0;
+  width: 20vw;
+  height: calc(100vh - 116px); /* 100vh (full viewport height) minus header and footer height */
+  background-color: #ded8c4;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  border-radius: 1px 10px 5px 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+}
+
+.left-nav.collapsed {
+  transform: translateX(-100%);
+}
+
+.left-nav button {
+  margin-bottom: 10px;
+  border-radius: 20px;
+  align-items: flex-start;
+}
+
+.left-nav select,
+.left-nav input {
+  height: 30px;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.link-input {
+  width: 70% !important;
+}
+
+.left-nav ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.left-nav li {
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.left-nav li:hover {
+  background-color: #555;
+}
+
+.expand-button:hover,
+.left-nav button:hover,
+.collapse-button:hover {
+  background-color: #e55926;
+}
+
+.expand-button:hover,
+.left-nav button:hover,
+.collapse-button:hover {
+  background-color: #e55926;
+}
+
+.left-nav.collapsed .expand-button {
+  display: block; /* Display the expand button when the navbar is collapsed */
 }

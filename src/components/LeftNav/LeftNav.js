@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './LeftNav.css';
-import Multiselect from 'multiselect-react-dropdown';
+import MultiSelect from '../MultiSelect/MultiSelect';
 
 const LeftNav = ({
     collapsed,
@@ -19,6 +19,7 @@ const LeftNav = ({
     setTimer,
     setQuestionType
 }) => {
+    const [selected, setSelected] = useState([]);
     const handleOptionChange = (e) => {
         setSelectedOption(e.target.value);
     };
@@ -32,7 +33,8 @@ const LeftNav = ({
     }
 
     const handleQuestionTypeChange =(e) => {
-        setQuestionType(e)
+        setQuestionType(e?.map(x => x.value))
+        setSelected(e)
     }
 
     const handleGenerateContent = () => {
@@ -50,12 +52,12 @@ const LeftNav = ({
 
     return (
         <div className={`left-nav${collapsed ? ' collapsed' : ''}`}>
-            <button className="collapse-button" onClick={toggleCollapse}>
+            {/* <button className="collapse-button" onClick={toggleCollapse}>
                 {collapsed ? '»' : '«'}
             </button>
             <button className="expand-button" onClick={toggleCollapse}>
                 Expand Navigation
-            </button>
+            </button> */}
             <select value={selectedOption || ''} onChange={handleOptionChange}>
                 <option value="">Select Option</option>
                 <option value="summary">Summary</option>
@@ -72,7 +74,7 @@ const LeftNav = ({
                     <><div className='link-div'>
                         <input
                         key={index}
-                        type="text"
+                        type="text" className='link-input'
                         placeholder="Enter link"
                         value={link}
                         onChange={(e) => handleLinkChange(index, e.target.value)} />
@@ -102,19 +104,17 @@ const LeftNav = ({
                     <><input type="number" placeholder="Time" value={timer}
                            onChange={handleTimerChange}/>
                     <div className="multiselect-div">
-                        <Multiselect
-                        isObject={false}
-                        onKeyPressFn={function noRefCheck(){}}
-                        onRemove={function noRefCheck(){}}
-                        onSearch={function noRefCheck(){}}
-                        onSelect={handleQuestionTypeChange}
-                        options={[
-                            'Long Answer',
-                            'Short Answer',
-                            'MCQs',
-                            'True/False',
-                            'Fill in the blanks'
-                        ]}
+                        <MultiSelect
+                            onChange={handleQuestionTypeChange}
+                            isMulti
+                            options={[
+                                { value: "Long Answer", label: "Long Answer" },
+                                { value: "Short Answer", label: "Short Answer" },
+                                { value: "MCQs", label: "MCQs" },
+                                { value: "True/False", label: "True/False" },
+                                { value: "Fill in the blanks", label: "Fill in the blanks" }
+                            ]}
+                            value={selected}
                         />
                     </div></>
                 )}

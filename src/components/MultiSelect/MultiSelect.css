@@ -1,0 +1,16 @@
+.css-13cymwt-control,
+.css-13cymwt-control:hover,
+.css-t3ipsp-control,
+.css-t3ipsp-control:hover {
+    height: 30px;
+    width: 100%;
+    border-radius: 20px !important;
+    text-align: center;
+    border-color: rgb(118, 118, 118);
+    border-width: 2px;
+}
+
+.css-1fdsijx-ValueContainer {
+    font-size: 14px;
+    padding: 0 1rem !important;
+}
