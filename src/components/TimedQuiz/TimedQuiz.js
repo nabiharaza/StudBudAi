@@ -64,8 +64,8 @@ const TimedQuiz = ({text, timer, handleContentGeneration}) => {
 
     const handleGenerateContent = async () => {
         try {
-            console.log("Answers to validate is going for Validation...->", answersToValidate);
-            prompt = `Provided is a list of answers that need validation. ${answersToValidate}. Please help validate if the userAnswer matches the correctAnswer and return the response in the same format with correctness score out of 10 and improvements if any`;
+            console.log("Answers to validate is going for Validation...->", JSON.stringify(answersToValidate));
+            prompt = `Provided is a list of answers that need validation. ${JSON.stringify(answersToValidate)}. Please help validate if the userAnswer matches the correctAnswer and return the response in the same format with correctness score out of 10 and improvements if any`;
             const responseText = await runChat(prompt);
             console.log("The ans is back from Validation -> ", responseText);
         } catch (error) {
