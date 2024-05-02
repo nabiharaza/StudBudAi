@@ -65,9 +65,31 @@ const TimedQuiz = ({text, timer, handleContentGeneration}) => {
     const handleGenerateContent = async () => {
         try {
             console.log("Answers to validate is going for Validation...->", JSON.stringify(answersToValidate));
-            prompt = `Provided is a list of answers that need validation. ${JSON.stringify(answersToValidate)}. Please help validate if the userAnswer matches the correctAnswer and return the response in the same format with correctness score out of 10 and improvements if any`;
+            prompt = `Provided is a list of answers that need validation. ${JSON.stringify(answersToValidate)}. Please help validate if the userAnswer matches the correctAnswer and return the response in the same format with 2 new properties added to the response - 1. correctnessScore (score out of 1) and 2. improvements`;
             const responseText = await runChat(prompt);
             console.log("The ans is back from Validation -> ", responseText);
+            let correctAnswers = 0;
+            if (responseText) {
+                var parsedResponse = JSON.parse(responseText)
+                parsedResponse?.forEach(response => {
+                    correctAnswers += response.correctnessScore;
+                    setQuizData(prevQuizData => 
+                        prevQuizData.map(quiz => {
+                            if (quiz.id === response.id) {
+                                return {
+                                    ...quiz,
+                                    improvement: response.improvements,
+                                    score: response.correctnessScore,
+                                };
+                            }
+
+                            return quiz;
+                        })
+                    );
+                });
+
+                setCorrectAnswerCount(correctAnswerCount+correctAnswers)
+            }
         } catch (error) {
             console.error("Error generating content:", error);
         }
@@ -117,7 +139,7 @@ const TimedQuiz = ({text, timer, handleContentGeneration}) => {
                         <QuizQuestion key={quiz.id} quiz={quiz} index={index} handleOptionSelect={handleOptionSelect}
                                       handleAnswer={handleAnswer} answer={answers[index]} showAnswers={showAnswers}/>
                     ))}
-                    {!quizCompleted && showSubmitButton && <button onClick={handleSubmit}>Submit</button>}
+                    {(!quizCompleted && showSubmitButton) && <button onClick={handleSubmit}>Submit</button>}
                     {(quizCompleted || !showAnswers) && <button onClick={handleRevealAnswers}>Reveal Answers</button>}
                     {showAnswers && (
                         <div>
@@ -148,10 +170,10 @@ const QuizQuestion = ({quiz, index, handleOptionSelect, handleAnswer, answer, sh
                     ))}
                 </ul>
             ) : quiz.questionType === 'Long Answer' || quiz.questionType === 'Short Answer' ? (
-                <textarea id={`ques_${index}`} rows="4" cols="50"
-                          onBlur={(event) => handleAnswer(index, event?.target?.value)}/>
+                <><textarea id={`ques_${index}`} rows="4" cols="50"
+                        onBlur={(event) => handleAnswer(index, event?.target?.value)} />{showAnswers && (<div className={quiz.score > 0.75 ? 'correct' : 'incorrect'}> {quiz.improvement} ({quiz.score}) </div>)}</>
             ) : (
-                <input type="text" id={`ques_${index}`} onBlur={(event) => handleAnswer(index, event?.target?.value)}/>
+                <><input type="text" id={`ques_${index}`} onBlur={(event) => handleAnswer(index, event?.target?.value)} />{showAnswers && (<div className={quiz.score > 0.75 ? 'correct' : 'incorrect'}> {quiz.improvement} ({quiz.score}) </div>)}</>
             )}
         </div>
     );
