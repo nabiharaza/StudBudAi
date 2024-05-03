@@ -171,9 +171,9 @@ const QuizQuestion = ({quiz, index, handleOptionSelect, handleAnswer, answer, sh
                 </ul>
             ) : quiz.questionType === 'Long Answer' || quiz.questionType === 'Short Answer' ? (
                 <><textarea id={`ques_${index}`} rows="4" cols="50"
-                        onBlur={(event) => handleAnswer(index, event?.target?.value)} />{showAnswers && (<div className={quiz.score > 0.75 ? 'correct' : 'incorrect'}> {quiz.improvement} ({quiz.score}) </div>)}</>
+                        onBlur={(event) => handleAnswer(index, event?.target?.value)} />{showAnswers && (<div className={quiz.score >= 0.75 ? 'correct' : 'incorrect'}> {quiz.improvement} ({quiz.score}) </div>)}</>
             ) : (
-                <><input type="text" id={`ques_${index}`} onBlur={(event) => handleAnswer(index, event?.target?.value)} />{showAnswers && (<div className={quiz.score > 0.75 ? 'correct' : 'incorrect'}> {quiz.improvement} ({quiz.score}) </div>)}</>
+                <><input type="text" id={`ques_${index}`} onBlur={(event) => handleAnswer(index, event?.target?.value)} />{showAnswers && (<div className={quiz.score >= 0.75 ? 'correct' : 'incorrect'}> {quiz.improvement} ({quiz.score}) </div>)}</>
             )}
         </div>
     );
@@ -193,7 +193,8 @@ const QuizOption = ({option, quiz, index, handleOptionSelect, answer, showAnswer
 
 const getOptionClassName = (option, quiz, selectedAnswer, showAnswers) => {
     if (showAnswers) {
-        return option === quiz.answer ? 'correct' : selectedAnswer === option ? 'incorrect' : '';
+        return quiz.answer === quiz.correctAnswer ? (option === quiz.correctAnswer ? 'correct' : '') : 
+        option === quiz.answer ? 'incorrect' : '';
     } else {
         return selectedAnswer === option ? 'selected' : '';
     }

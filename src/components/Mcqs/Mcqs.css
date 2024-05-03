@@ -30,12 +30,12 @@ li {
   cursor: pointer;
 }
 
-.option.correct {
+.option.correct, .correct {
   color: green;
   font-weight: bold;
 }
 
-.option.incorrect {
+.option.incorrect, .incorrect {
   color: red;
   font-weight: bold;
 }
