@@ -116,6 +116,7 @@ const TimedQuiz = ({text, timer, handleContentGeneration}) => {
         });
         setQuizData(newQuizData);
         setCorrectAnswerCount(correctCount);
+        setQuizCompleted(true);
 
         console.log('New MCQs Data:', newQuizData);
         console.log('Correct answer count:', correctCount);
@@ -140,14 +141,12 @@ const TimedQuiz = ({text, timer, handleContentGeneration}) => {
                                       handleAnswer={handleAnswer} answer={answers[index]} showAnswers={showAnswers}/>
                     ))}
                     {(!quizCompleted && showSubmitButton) && <button onClick={handleSubmit}>Submit</button>}
-                    {(quizCompleted || !showAnswers) && <button onClick={handleRevealAnswers}>Reveal Answers</button>}
                     {showAnswers && (
                         <div>
                             <p>Answers revealed!</p>
                             <p>
                                 You got {correctAnswerCount} out of {quizData.length} correct.
                             </p>
-                            <button onClick={hideAnswers}>Hide Answers</button>
                         </div>
                     )}
                 </>
