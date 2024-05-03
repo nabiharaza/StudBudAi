@@ -66,9 +66,7 @@ const LeftNav = ({
                 <option value="timedQuiz">Timed Quiz</option>
                 <option value="truefalse">True/False</option>
                 <option value="mcqs">MCQs</option>
-                <option value="history">History</option>
             </select>
-            {selectedOption !== 'history' && (
                 <>
                 {links.map((link, index) => (
                     <><div className='link-div'>
@@ -120,8 +118,6 @@ const LeftNav = ({
                 )}
                     <button className="generate-button" onClick={handleGenerateContent}>Generate Content</button>
                 </>
-            )
-            }
         </div>
     )
         ;
